@@ -43,7 +43,6 @@ public class ViewModel {
 
     public void setCoordinateL(final String coordinateL) {
         if (coordinateL.equals(this.coordinateL)) {
-            return;
         }
 
         this.coordinateL = coordinateL;
@@ -55,7 +54,6 @@ public class ViewModel {
 
     public void setCoordinateM(final String coordinateM) {
         if (coordinateM.equals(this.coordinateM)) {
-            return;
         }
 
         this.coordinateM = coordinateM;
@@ -67,7 +65,6 @@ public class ViewModel {
 
     public void setCoordinateN(final String coordinateN) {
         if (coordinateN.equals(this.coordinateN)) {
-            return;
         }
 
         this.coordinateN = coordinateN;
@@ -79,7 +76,6 @@ public class ViewModel {
 
     public void setCoordinateX0(final String coordinateX0) {
         if (coordinateX0.equals(this.coordinateX0)) {
-            return;
         }
 
         this.coordinateX0 = coordinateX0;
@@ -91,7 +87,6 @@ public class ViewModel {
 
     public void setCoordinateY0(final String coordinateY0) {
         if (coordinateY0.equals(this.coordinateY0)) {
-            return;
         }
 
         this.coordinateY0 = coordinateY0;
@@ -103,7 +98,6 @@ public class ViewModel {
 
     public void setCoordinateZ0(final String coordinateZ0) {
         if (coordinateZ0.equals(this.coordinateZ0)) {
-            return;
         }
 
         this.coordinateZ0 = coordinateZ0;
@@ -115,7 +109,6 @@ public class ViewModel {
 
     public void setParametrA(final String parametrA) {
         if (parametrA.equals(this.parametrA)) {
-            return;
         }
 
         this.parametrA = parametrA;
@@ -127,7 +120,6 @@ public class ViewModel {
 
     public void setParametrB(final String parametrB) {
         if (parametrB.equals(this.parametrB)) {
-            return;
         }
 
         this.parametrB = parametrB;
@@ -139,7 +131,6 @@ public class ViewModel {
 
     public void setParametrC(final String parametrC) {
         if (parametrC.equals(this.parametrC)) {
-            return;
         }
 
         this.parametrC = parametrC;
@@ -151,7 +142,6 @@ public class ViewModel {
 
     public void setParametrD(final String parametrD) {
         if (parametrD.equals(this.parametrD)) {
-            return;
         }
 
         this.parametrD = parametrD;
@@ -230,7 +220,6 @@ public class ViewModel {
     }
     public void intersect() {
         if (!parseInput()) {
-            return;
         }
 
         Line3D line = new Line3D(coordinateL, coordinateM, coordinateN,
