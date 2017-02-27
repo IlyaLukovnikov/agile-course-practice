@@ -199,8 +199,12 @@ project(":code/personal-finance/View").name = "personal-finance-View"
 
 // Лачинов Дмитрий
 // Луковников Илья
-include "code/lukovnikov-ilya"
-project(":code/lukovnikov-ilya").name = "lukovnikov-ilya-Model"
+include "code/lukovnikov-ilya/Model"
+project(":code/lukovnikov-ilya/Model").name = "lukovnikov-ilya-Model"
+include "code/lukovnikov-ilya/ViewModel"
+project(":code/lukovnikov-ilya/ViewModel").name = "lukovnikov-ilya-ViewModel"
+include "code/lukovnikov-ilya/View"
+project(":code/lukovnikov-ilya/View").name = "lukovnikov-ilya-View"
 // Максимов Максим
 // Малойкина Елена; Тарасенко Алексей (lab3)
 include "code/notation-converter/Model"
