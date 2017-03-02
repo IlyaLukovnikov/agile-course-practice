@@ -1,3 +1,4 @@
 dependencies {
     compile project(':lukovnikov-ilya-ViewModel')
+    compile project(':lukovnikov-ilya-Infrastructure')
 }

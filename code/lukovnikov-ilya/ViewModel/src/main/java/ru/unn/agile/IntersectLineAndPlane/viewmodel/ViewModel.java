@@ -4,6 +4,8 @@ package ru.unn.agile.IntersectLineAndPlane.viewmodel;
 import ru.unn.agile.IntersectLineAndPlane.model.Line3D;
 import ru.unn.agile.IntersectLineAndPlane.model.Plane3D;
 
+import java.util.List;
+
 
 public class ViewModel {
     private String coordinateL;
@@ -19,8 +21,15 @@ public class ViewModel {
     private String result;
     private String status;
     private boolean isIntersectButtonEnabled;
+    private boolean isInputChanged;
+    private final ILogger logger;
 
-    public ViewModel() {
+    public ViewModel(final ILogger logger) {
+        if (logger == null) {
+            throw new IllegalArgumentException("Logger parameter can't be null");
+        }
+
+        this.logger = logger;
         coordinateL = "";
         coordinateM = "";
         coordinateN = "";
@@ -35,6 +44,7 @@ public class ViewModel {
         status = Status.WAITING;
 
         isIntersectButtonEnabled = false;
+        isInputChanged = true;
     }
 
     public String getCoordinateL() {
@@ -44,6 +54,7 @@ public class ViewModel {
     public void setCoordinateL(final String coordinateL) {
 
         this.coordinateL = coordinateL;
+        isInputChanged = true;
     }
 
     public String getCoordinateM() {
@@ -53,6 +64,7 @@ public class ViewModel {
     public void setCoordinateM(final String coordinateM) {
 
         this.coordinateM = coordinateM;
+        isInputChanged = true;
     }
 
     public String getCoordinateN() {
@@ -62,6 +74,7 @@ public class ViewModel {
     public void setCoordinateN(final String coordinateN) {
 
         this.coordinateN = coordinateN;
+        isInputChanged = true;
     }
 
     public String getCoordinateX0() {
@@ -71,6 +84,7 @@ public class ViewModel {
     public void setCoordinateX0(final String coordinateX0) {
 
         this.coordinateX0 = coordinateX0;
+        isInputChanged = true;
     }
 
     public String getCoordinateY0() {
@@ -80,6 +94,7 @@ public class ViewModel {
     public void setCoordinateY0(final String coordinateY0) {
 
         this.coordinateY0 = coordinateY0;
+        isInputChanged = true;
     }
 
     public String getCoordinateZ0() {
@@ -89,6 +104,7 @@ public class ViewModel {
     public void setCoordinateZ0(final String coordinateZ0) {
 
         this.coordinateZ0 = coordinateZ0;
+        isInputChanged = true;
     }
 
     public String getParametrA() {
@@ -98,6 +114,7 @@ public class ViewModel {
     public void setParametrA(final String parametrA) {
 
         this.parametrA = parametrA;
+        isInputChanged = true;
     }
 
     public String getParametrB() {
@@ -107,6 +124,7 @@ public class ViewModel {
     public void setParametrB(final String parametrB) {
 
         this.parametrB = parametrB;
+        isInputChanged = true;
     }
 
     public String getParametrC() {
@@ -116,6 +134,7 @@ public class ViewModel {
     public void setParametrC(final String parametrC) {
 
         this.parametrC = parametrC;
+        isInputChanged = true;
     }
 
     public String getParametrD() {
@@ -125,6 +144,7 @@ public class ViewModel {
     public void setParametrD(final String parametrD) {
 
         this.parametrD = parametrD;
+        isInputChanged = true;
     }
 
     public String getResult() {
@@ -199,6 +219,8 @@ public class ViewModel {
         return isIntersectButtonEnabled;
     }
     public void intersect() {
+        logger.log(intersectLogMessage());
+
         if (!parseInput()) {
             return;
         }
@@ -220,13 +242,74 @@ public class ViewModel {
         }
     }
     private void enterPressed() {
+        logInputParametrs();
 
         if (isIntersectButtonEnabled()) {
             intersect();
         }
     }
+
+    private void logInputParametrs() {
+        if (!isInputChanged) {
+            return;
+        }
+
+        logger.log(editingFinishedLogMessage());
+        isInputChanged = false;
+    }
+
+    public void focusLost() {
+        logInputParametrs();
+    }
+
+    private String editingFinishedLogMessage() {
+        String message = LogMessages.EDITING_FINISHED
+                + "Input arguments are: ["
+                + coordinateL + "; "
+                + coordinateM + "; "
+                + coordinateN + "; "
+                + coordinateX0 + "; "
+                + coordinateY0 + "; "
+                + coordinateZ0 + "; "
+                + parametrA + "; "
+                + parametrB + "; "
+                + parametrC + "; "
+                + parametrD + "]";
+
+        return message;
+    }
+
     public boolean isIntersectButtonEnabled() {
         return isIntersectButtonEnabled;
+    }
+
+    public List<String> getLog() {
+        return logger.getLog();
+    }
+
+    private String intersectLogMessage() {
+        String message =
+                LogMessages.INTERSECT_WAS_PRESSED + "Arguments"
+                        + ": CoordinateL = " + coordinateL
+                        + "; CoordinateM = " + coordinateM
+                        + "; CoordinateN = " + coordinateN
+                        + "; CoordinateX0 = " + coordinateX0
+                        + "; CoordinateY0 = " + coordinateY0
+                        + "; CoordinateZ0 = " + coordinateZ0
+                        + "; CoordinateX0 = " + coordinateX0
+                        + "; ParametrA = " + parametrA
+                        + "; ParametrB = " + parametrB
+                        + "; ParametrC = " + parametrC
+                        + "; ParametrD = " + parametrD + ".";
+
+        return message;
+    }
+
+    public final class LogMessages {
+        public static final String INTERSECT_WAS_PRESSED = "Intersection. ";
+        public static final String EDITING_FINISHED = "Updated input. ";
+
+        private LogMessages() { }
     }
 }
 

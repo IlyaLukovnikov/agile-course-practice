@@ -1,12 +1,10 @@
 package ru.unn.agile.IntersectLineAndPlane.view;
 
 import ru.unn.agile.IntersectLineAndPlane.viewmodel.ViewModel;
-
+import ru.unn.agile.IntersectLineAndPlane.infrastructure.TxtLogger;
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import java.awt.event.*;
+import java.util.List;
 
 public final class Intersection {
     private JPanel mainPanel;
@@ -25,6 +23,7 @@ public final class Intersection {
     private JButton findIntersectionButton;
     private JTextField textResult;
     private JLabel lbStatus;
+    private JList<String> lstLog;
 
     private Intersection(final ViewModel viewModel) {
         this.viewModel = viewModel;
@@ -58,6 +57,25 @@ public final class Intersection {
         textCoefficientB.addKeyListener(keyListener);
         textCoefficientC.addKeyListener(keyListener);
         textCoefficientD.addKeyListener(keyListener);
+
+        FocusAdapter focusLostListener = new FocusAdapter() {
+            public void focusLost(final FocusEvent e) {
+                bind();
+                Intersection.this.viewModel.focusLost();
+                backBind();
+            }
+        };
+        textCoordinateL.addFocusListener(focusLostListener);
+        textCoordinateM.addFocusListener(focusLostListener);
+        textCoordinateM.addFocusListener(focusLostListener);
+        textCoordinateN.addFocusListener(focusLostListener);
+        textCoordinateX0.addFocusListener(focusLostListener);
+        textCoordinateY0.addFocusListener(focusLostListener);
+        textCoordinateZ0.addFocusListener(focusLostListener);
+        textCoefficientA.addFocusListener(focusLostListener);
+        textCoefficientB.addFocusListener(focusLostListener);
+        textCoefficientC.addFocusListener(focusLostListener);
+        textCoefficientD.addFocusListener(focusLostListener);
     }
 
     private void bind() {
@@ -78,11 +96,17 @@ public final class Intersection {
 
         textResult.setText(viewModel.getResult());
         lbStatus.setText(viewModel.getStatus());
+
+        List<String> log = viewModel.getLog();
+        String[] items = log.toArray(new String[log.size()]);
+        lstLog.setListData(items);
     }
 
     public static void main(final String[]  args) {
         JFrame frame = new JFrame("Intersection");
-        frame.setContentPane(new Intersection(new ViewModel()).mainPanel);
+
+        TxtLogger logger = new TxtLogger("./Intersection.log");
+        frame.setContentPane(new Intersection(new ViewModel(logger)).mainPanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.pack();
         frame.setVisible(true);

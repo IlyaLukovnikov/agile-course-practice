@@ -205,6 +205,8 @@ include "code/lukovnikov-ilya/ViewModel"
 project(":code/lukovnikov-ilya/ViewModel").name = "lukovnikov-ilya-ViewModel"
 include "code/lukovnikov-ilya/View"
 project(":code/lukovnikov-ilya/View").name = "lukovnikov-ilya-View"
+include "code/lukovnikov-ilya/Infrastructure"
+project(":code/lukovnikov-ilya/Infrastructure").name = "lukovnikov-ilya-Infrastructure"
 // Максимов Максим
 // Малойкина Елена; Тарасенко Алексей (lab3)
 include "code/notation-converter/Model"

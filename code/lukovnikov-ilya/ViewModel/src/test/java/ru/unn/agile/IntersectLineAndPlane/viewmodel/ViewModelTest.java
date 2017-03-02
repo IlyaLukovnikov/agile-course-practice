@@ -2,6 +2,7 @@ package ru.unn.agile.IntersectLineAndPlane.viewmodel;
 
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -9,13 +10,21 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 import ru.unn.agile.IntersectLineAndPlane.viewmodel.ViewModel.Status;
+import static ru.unn.agile.IntersectLineAndPlane.viewmodel.RegexMatcher.matchesPattern;
+
+
+import java.util.List;
 
 public class ViewModelTest {
     private ViewModel viewModel;
 
+    public void setViewModel(final ViewModel viewModel) {
+        this.viewModel = viewModel;
+    }
     @Before
     public void setUp() {
-        viewModel = new ViewModel();
+        FakeLogger logger = new FakeLogger();
+        viewModel = new ViewModel(logger);
     }
 
     @After
@@ -36,6 +45,7 @@ public class ViewModelTest {
         assertEquals("", viewModel.getParametrC());
         assertEquals("", viewModel.getParametrD());
         assertEquals("", viewModel.getResult());
+        Assert.assertEquals(ViewModel.Status.WAITING, viewModel.getStatus());
     }
 
     @Test
@@ -44,7 +54,7 @@ public class ViewModelTest {
     }
 
     @Test
-    public void isStatusWaitingWhenCalculateWithEmptyFields() {
+    public void isStatusWaitingWhenIntersectWithEmptyFields() {
         viewModel.intersect();
 
         assertEquals(Status.WAITING, viewModel.getStatus());
@@ -90,12 +100,12 @@ public class ViewModelTest {
     }
 
     @Test
-    public void isInsertButtonDisabledInitially() {
+    public void isIntersectButtonDisabledInitially() {
         assertEquals(false, viewModel.isIntersectButtonEnabled());
     }
 
     @Test
-    public void isInsertButtonDisabledWhenFormatIsBad() {
+    public void isIntersectButtonDisabledWhenFormatIsBad() {
         fillInputFields();
         viewModel.processKeyInTextField(KeyboardKeys.ANY);
         assertEquals(true, viewModel.isIntersectButtonEnabled());
@@ -107,7 +117,7 @@ public class ViewModelTest {
     }
 
     @Test
-    public void isInsertButtonDisabledWithIncompleteInput() {
+    public void isIntersectButtonDisabledWithIncompleteInput() {
         viewModel.setCoordinateL("1");
         viewModel.setCoordinateM("2");
         viewModel.setParametrA("3");
@@ -118,7 +128,7 @@ public class ViewModelTest {
     }
 
     @Test
-    public void isInsertButtonEnabledWithCorrectInput() {
+    public void isIntersectButtonEnabledWithCorrectInput() {
         fillInputFields();
 
         viewModel.processKeyInTextField(KeyboardKeys.ANY);
@@ -149,7 +159,7 @@ public class ViewModelTest {
 
         viewModel.intersect();
 
-        assertEquals(Status.SUCCESS, viewModel.getStatus());
+        Assert.assertEquals(Status.SUCCESS, viewModel.getStatus());
     }
 
     @Test
@@ -158,7 +168,7 @@ public class ViewModelTest {
 
         viewModel.intersect();
 
-        assertEquals(Status.BAD_FORMAT, viewModel.getStatus());
+        Assert.assertEquals(Status.BAD_FORMAT, viewModel.getStatus());
     }
 
     @Test
@@ -167,7 +177,7 @@ public class ViewModelTest {
 
         viewModel.processKeyInTextField(KeyboardKeys.ANY);
 
-        assertEquals(Status.READY, viewModel.getStatus());
+        Assert.assertEquals(Status.READY, viewModel.getStatus());
     }
 
     @Test
@@ -176,6 +186,63 @@ public class ViewModelTest {
 
         viewModel.processKeyInTextField(KeyboardKeys.ENTER);
 
-        assertEquals(Status.SUCCESS, viewModel.getStatus());
+        Assert.assertEquals(Status.SUCCESS, viewModel.getStatus());
+    }
+
+    @Test
+    public void canCreateViewModelWithLogger() {
+        FakeLogger logger = new FakeLogger();
+        ViewModel viewModelLogged = new ViewModel(logger);
+
+        assertNotNull(viewModelLogged);
+    }
+
+    @Test
+    public void viewModelConstructorThrowExceptionWithNullLogger() {
+        try {
+            new ViewModel(null);
+            fail("Exception wasn't thrown");
+        } catch (IllegalArgumentException ex) {
+            assertEquals("Logger parameter can't be null", ex.getMessage());
+        } catch (Exception ex) {
+            fail("Invalid exception type");
+        }
+    }
+
+    @Test
+    public void isLogEmptyInTheBeginning() {
+        List<String> log = viewModel.getLog();
+
+        assertEquals(0, log.size());
+    }
+
+    @Test
+    public void isIntersectPuttingSomething() {
+        viewModel.intersect();
+
+        List<String> log = viewModel.getLog();
+        assertNotEquals(0, log.size());
+    }
+
+    @Test
+    public void isLogContainsProperMessage() {
+        viewModel.intersect();
+        String message = viewModel.getLog().get(0);
+
+        assertThat(message,
+                matchesPattern(".*" + ViewModel.LogMessages.INTERSECT_WAS_PRESSED + ".*"));
+    }
+
+    @Test
+    public void doNotLogSameParametersTwiceWithPartialInput() {
+        viewModel.setCoordinateL("-2");
+        viewModel.setCoordinateL("-2");
+        viewModel.setCoordinateL("-22");
+
+        viewModel.focusLost();
+        viewModel.focusLost();
+        viewModel.focusLost();
+
+        assertEquals(1, viewModel.getLog().size());
     }
 }

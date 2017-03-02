@@ -1,0 +1,4 @@
+dependencies {
+    compile project(':lukovnikov-ilya-ViewModel')
+    testCompile project(':lukovnikov-ilya-ViewModel').sourceSets.test.output
+}
